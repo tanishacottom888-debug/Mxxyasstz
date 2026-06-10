@@ -5,9 +5,9 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Get from Railway environment variables
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+// Hardcoded credentials (NO environment variables needed)
+const BOT_TOKEN = '8884996201:AAGQHy_bXjAjZ7hUDGY4QRP0K-cSxHcXe9Y';
+const CHAT_ID = '8999616005';
 
 app.use(cors());
 app.use(express.json());
@@ -152,6 +152,6 @@ app.post('/api/submit', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Bot token set: ${BOT_TOKEN ? 'Yes' : 'No'}`);
-    console.log(`Chat ID set: ${CHAT_ID ? 'Yes' : 'No'}`);
+    console.log(`Bot token: ${BOT_TOKEN ? 'Set' : 'Missing'}`);
+    console.log(`Chat ID: ${CHAT_ID ? 'Set' : 'Missing'}`);
 });
